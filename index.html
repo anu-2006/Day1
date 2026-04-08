@@ -1,11 +1,675 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cool Time Showcase</title>
+  <link rel="preconnect" href="https://api.fontshare.com" />
+  <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&f[]=cabinet-grotesk@500,700,800&display=swap" rel="stylesheet" />
+  <style>
+    :root,
+    [data-theme="light"] {
+      --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+      --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+      --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+      --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
+      --text-xl: clamp(1.5rem, 1.2rem + 1.25vw, 2.25rem);
+      --text-2xl: clamp(2rem, 1.2rem + 2.5vw, 3.5rem);
+      --text-3xl: clamp(2.5rem, 1rem + 4vw, 5rem);
+
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-10: 2.5rem;
+      --space-12: 3rem;
+      --space-16: 4rem;
+      --space-20: 5rem;
+
+      --radius-sm: 0.375rem;
+      --radius-md: 0.75rem;
+      --radius-lg: 1.25rem;
+      --radius-xl: 1.75rem;
+      --radius-full: 9999px;
+
+      --font-body: 'General Sans', Inter, sans-serif;
+      --font-display: 'Cabinet Grotesk', 'General Sans', sans-serif;
+
+      --color-bg: #eff3f8;
+      --color-surface: rgba(255,255,255,0.72);
+      --color-surface-2: rgba(255,255,255,0.86);
+      --color-border: rgba(36, 45, 58, 0.1);
+      --color-divider: rgba(36, 45, 58, 0.12);
+      --color-text: #111827;
+      --color-text-muted: #556070;
+      --color-text-faint: #7c8798;
+      --color-primary: #0f766e;
+      --color-primary-strong: #0a4f4a;
+      --color-accent: #7c3aed;
+      --shadow-lg: 0 18px 50px rgba(17, 24, 39, 0.13);
+      --shadow-md: 0 10px 30px rgba(17, 24, 39, 0.09);
+      --glow: radial-gradient(circle at top right, rgba(124, 58, 237, 0.22), transparent 35%), radial-gradient(circle at bottom left, rgba(15, 118, 110, 0.18), transparent 30%);
+    }
+
+    [data-theme="dark"] {
+      --color-bg: #090d16;
+      --color-surface: rgba(12, 18, 30, 0.64);
+      --color-surface-2: rgba(17, 25, 40, 0.86);
+      --color-border: rgba(148, 163, 184, 0.15);
+      --color-divider: rgba(148, 163, 184, 0.16);
+      --color-text: #f8fafc;
+      --color-text-muted: #b6c2d2;
+      --color-text-faint: #7f8ba0;
+      --color-primary: #5eead4;
+      --color-primary-strong: #2dd4bf;
+      --color-accent: #a78bfa;
+      --shadow-lg: 0 22px 70px rgba(0, 0, 0, 0.45);
+      --shadow-md: 0 12px 35px rgba(0, 0, 0, 0.32);
+      --glow: radial-gradient(circle at top right, rgba(94, 234, 212, 0.18), transparent 32%), radial-gradient(circle at bottom left, rgba(167, 139, 250, 0.16), transparent 35%);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      min-height: 100vh;
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      color: var(--color-text);
+      background:
+        radial-gradient(circle at 15% 20%, rgba(34, 211, 238, 0.12), transparent 24%),
+        radial-gradient(circle at 85% 15%, rgba(139, 92, 246, 0.14), transparent 22%),
+        radial-gradient(circle at 50% 100%, rgba(45, 212, 191, 0.12), transparent 25%),
+        var(--color-bg);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: radial-gradient(circle at center, black 48%, transparent 90%);
+      pointer-events: none;
+      opacity: 0.35;
+    }
+
+    img, svg { display: block; max-width: 100%; }
+    button { font: inherit; border: none; background: none; color: inherit; cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
+
+    .skip-link {
+      position: absolute;
+      left: -9999px;
+      top: auto;
+    }
+    .skip-link:focus {
+      left: 1rem;
+      top: 1rem;
+      z-index: 50;
+      background: var(--color-surface-2);
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-md);
+    }
+
+    .page-shell {
+      width: min(1120px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: var(--space-6) 0 var(--space-12);
+      position: relative;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+      margin-bottom: var(--space-8);
+      padding: var(--space-4) var(--space-5);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      background: var(--color-surface);
+      backdrop-filter: blur(22px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .brand svg {
+      width: 2.6rem;
+      height: 2.6rem;
+      padding: 0.55rem;
+      border-radius: 0.9rem;
+      background: linear-gradient(135deg, rgba(94,234,212,0.18), rgba(167,139,250,0.18));
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .brand-text strong {
+      display: block;
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      letter-spacing: -0.03em;
+    }
+
+    .brand-text span {
+      color: var(--color-text-muted);
+      font-size: var(--text-sm);
+    }
+
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 48px;
+      min-height: 48px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--color-border);
+      background: var(--color-surface-2);
+      backdrop-filter: blur(20px);
+      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+    }
+
+    .theme-toggle:hover,
+    .theme-toggle:focus-visible {
+      transform: translateY(-2px);
+      border-color: rgba(94, 234, 212, 0.45);
+    }
+
+    main {
+      display: grid;
+      gap: var(--space-6);
+    }
+
+    .hero {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1.3fr 0.9fr;
+      gap: var(--space-6);
+      padding: clamp(1.4rem, 3vw, 2rem);
+    }
+
+    .panel {
+      position: relative;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      background: var(--glow), var(--color-surface);
+      backdrop-filter: blur(22px);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+
+    .panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.22), transparent 25%, transparent 70%, rgba(94,234,212,0.22));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .hero-copy {
+      padding: clamp(1.4rem, 3vw, 2.2rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--space-8);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      width: fit-content;
+      padding: 0.45rem 0.9rem;
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(94, 234, 212, 0.2);
+      background: rgba(94, 234, 212, 0.08);
+      color: var(--color-primary);
+      font-size: var(--text-sm);
+    }
+
+    h1 {
+      margin-top: var(--space-5);
+      font-family: var(--font-display);
+      font-size: var(--text-3xl);
+      letter-spacing: -0.055em;
+      line-height: 0.94;
+      max-width: 10ch;
+    }
+
+    .hero-copy p {
+      color: var(--color-text-muted);
+      max-width: 56ch;
+      margin-top: var(--space-5);
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-4);
+    }
+
+    .stat-card {
+      padding: var(--space-4);
+      border-radius: var(--radius-lg);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--color-border);
+    }
+
+    .stat-card span {
+      display: block;
+      font-size: var(--text-xs);
+      color: var(--color-text-faint);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 0.35rem;
+    }
+
+    .stat-card strong {
+      font-size: var(--text-lg);
+      font-weight: 600;
+    }
+
+    .clock-panel {
+      padding: clamp(1.2rem, 2.5vw, 1.8rem);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-5);
+      justify-content: center;
+    }
+
+    .clock-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      color: var(--color-text-muted);
+      font-size: var(--text-sm);
+    }
+
+    .live-dot {
+      width: 0.65rem;
+      height: 0.65rem;
+      border-radius: var(--radius-full);
+      background: var(--color-primary);
+      box-shadow: 0 0 0 0 rgba(94, 234, 212, 0.65);
+      animation: pulse 1.8s infinite;
+    }
+
+    .time-box {
+      padding: var(--space-6);
+      border-radius: calc(var(--radius-xl) - 0.45rem);
+      background: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02));
+      border: 1px solid var(--color-border);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+
+    .time {
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 4vw, 4.8rem);
+      line-height: 0.92;
+      letter-spacing: -0.06em;
+      font-variant-numeric: tabular-nums;
+      text-shadow: 0 0 25px rgba(94, 234, 212, 0.12);
+    }
+
+    .date {
+      margin-top: var(--space-4);
+      color: var(--color-text-muted);
+      font-size: var(--text-lg);
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-4);
+    }
+
+    .meta-card {
+      padding: var(--space-4);
+      border-radius: var(--radius-lg);
+      background: rgba(255,255,255,0.035);
+      border: 1px solid var(--color-border);
+    }
+
+    .meta-card span {
+      display: block;
+      color: var(--color-text-faint);
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 0.4rem;
+    }
+
+    .meta-card strong {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .feature-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.1fr;
+      gap: var(--space-6);
+    }
+
+    .feature-card {
+      padding: clamp(1.2rem, 2.5vw, 1.7rem);
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .feature-card h2,
+    .feature-card h3 {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      letter-spacing: -0.04em;
+      margin-bottom: var(--space-3);
+    }
+
+    .feature-card p,
+    .feature-card li {
+      color: var(--color-text-muted);
+      font-size: var(--text-sm);
+    }
+
+    .feature-card ul {
+      list-style: none;
+      display: grid;
+      gap: var(--space-3);
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      width: fit-content;
+      padding: 0.5rem 0.8rem;
+      border-radius: var(--radius-full);
+      background: rgba(167, 139, 250, 0.11);
+      color: var(--color-accent);
+      font-size: var(--text-sm);
+      border: 1px solid rgba(167, 139, 250, 0.16);
+      margin-bottom: var(--space-5);
+    }
+
+    .orbit {
+      position: relative;
+      width: min(240px, 100%);
+      aspect-ratio: 1;
+      margin-left: auto;
+      margin-right: auto;
+      border-radius: 50%;
+      border: 1px solid rgba(148, 163, 184, 0.16);
+      display: grid;
+      place-items: center;
+    }
+
+    .orbit::before,
+    .orbit::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      border: 1px dashed rgba(148, 163, 184, 0.16);
+      inset: 16%;
+    }
+
+    .orbit::after {
+      inset: 31%;
+    }
+
+    .center-core {
+      width: 72px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(94,234,212,0.88), rgba(167,139,250,0.9));
+      box-shadow: 0 0 35px rgba(94,234,212,0.28);
+    }
+
+    .orbit-point {
+      position: absolute;
+      width: 16px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-md);
+    }
+
+    .orbit-point.one { top: 10%; left: 50%; transform: translateX(-50%); }
+    .orbit-point.two { right: 12%; top: 52%; transform: translateY(-50%); }
+    .orbit-point.three { bottom: 12%; left: 24%; }
+
+    .footer-note {
+      text-align: center;
+      color: var(--color-text-faint);
+      font-size: var(--text-sm);
+      padding-top: var(--space-3);
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(94, 234, 212, 0.65); }
+      70% { box-shadow: 0 0 0 12px rgba(94, 234, 212, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(94, 234, 212, 0); }
+    }
+
+    @media (max-width: 980px) {
+      .hero,
+      .feature-layout {
+        grid-template-columns: 1fr;
+      }
+
+      h1 { max-width: 13ch; }
+      .hero-stats { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .page-shell { width: min(100% - 1rem, 1120px); padding-top: var(--space-4); }
+      header { padding: var(--space-4); margin-bottom: var(--space-5); }
+      .hero { padding: 0; }
+      .hero-copy,
+      .clock-panel,
+      .feature-card { padding: 1.1rem; }
+      .meta-grid { grid-template-columns: 1fr; }
+      .time { font-size: clamp(2.5rem, 14vw, 3.5rem); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
 </head>
 <body>
-    <h1>Hello from git hub</h1>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <div class="page-shell">
+    <header>
+      <div class="brand" aria-label="Time Aura logo and title">
+        <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+          <rect x="5" y="5" width="38" height="38" rx="14" stroke="currentColor" stroke-width="2.5"></rect>
+          <path d="M24 13V24L31.5 29.5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+          <circle cx="24" cy="24" r="2.5" fill="currentColor"></circle>
+        </svg>
+        <div class="brand-text">
+          <strong>Time Aura</strong>
+          <span>Elegant live date and time experience</span>
+        </div>
+      </div>
+      <button class="theme-toggle" data-theme-toggle aria-label="Switch color theme" title="Switch theme">
+        <span aria-hidden="true">☀</span>
+      </button>
+    </header>
+
+    <main id="main-content">
+      <section class="hero">
+        <article class="panel hero-copy">
+          <div>
+            <div class="eyebrow">
+              <span class="live-dot" aria-hidden="true"></span>
+              Live interface
+            </div>
+            <h1>Current date and time with a premium modern look.</h1>
+            <p>
+              This website uses a cool but decent visual style with glass panels, soft glow accents, smooth spacing, and a clean layout so the clock feels unique and user attractive without looking crowded.
+            </p>
+          </div>
+
+          <div class="hero-stats" aria-label="Quick highlights">
+            <div class="stat-card">
+              <span>Style</span>
+              <strong>Cool + decent</strong>
+            </div>
+            <div class="stat-card">
+              <span>Mode</span>
+              <strong>Live sync</strong>
+            </div>
+            <div class="stat-card">
+              <span>Experience</span>
+              <strong>User focused</strong>
+            </div>
+          </div>
+        </article>
+
+        <aside class="panel clock-panel" aria-label="Current date and time panel">
+          <div class="clock-top">
+            <span>Current local time</span>
+            <span id="timezone">GMT</span>
+          </div>
+
+          <div class="time-box">
+            <div class="time" id="time">00:00:00</div>
+            <div class="date" id="date">Loading date...</div>
+          </div>
+
+          <div class="meta-grid">
+            <div class="meta-card">
+              <span>Day progress</span>
+              <strong id="progress">0%</strong>
+            </div>
+            <div class="meta-card">
+              <span>Weekday</span>
+              <strong id="weekday">Monday</strong>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="feature-layout" aria-label="Website features">
+        <article class="panel feature-card">
+          <div>
+            <div class="chip">Distinct visual identity</div>
+            <h2>Balanced design that feels polished on desktop and mobile.</h2>
+          </div>
+          <p>
+            The interface uses calm dark surfaces, vibrant but controlled highlights, and rounded glass cards so your site feels modern, clean, and professional.
+          </p>
+        </article>
+
+        <article class="panel feature-card">
+          <div>
+            <div class="chip">Readable live data</div>
+            <h3>Large numbers, soft contrast, and clear hierarchy.</h3>
+          </div>
+          <ul>
+            <li>Real-time hour, minute, and second updates.</li>
+            <li>Full current date with weekday details.</li>
+            <li>Theme toggle for light and dark viewing.</li>
+          </ul>
+        </article>
+
+        <article class="panel feature-card">
+          <div>
+            <div class="chip">Unique attraction</div>
+            <h3>Subtle futuristic art gives the page a signature look.</h3>
+          </div>
+          <div class="orbit" aria-hidden="true">
+            <div class="center-core"></div>
+            <div class="orbit-point one"></div>
+            <div class="orbit-point two"></div>
+            <div class="orbit-point three"></div>
+          </div>
+        </article>
+      </section>
+
+      <p class="footer-note">Designed to feel smooth, elegant, and attention grabbing without losing clarity.</p>
+    </main>
+  </div>
+
+  <script>
+    const root = document.documentElement;
+    const toggle = document.querySelector('[data-theme-toggle]');
+    let currentTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+
+    function setTheme(theme) {
+      currentTheme = theme;
+      root.setAttribute('data-theme', theme);
+      toggle.innerHTML = theme === 'dark' ? '<span aria-hidden="true">☀</span>' : '<span aria-hidden="true">☾</span>';
+      toggle.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+    }
+
+    setTheme(currentTheme);
+    toggle.addEventListener('click', () => {
+      setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+    });
+
+    const timeEl = document.getElementById('time');
+    const dateEl = document.getElementById('date');
+    const progressEl = document.getElementById('progress');
+    const weekdayEl = document.getElementById('weekday');
+    const timezoneEl = document.getElementById('timezone');
+
+    function updateClock() {
+      const now = new Date();
+      const timeText = now.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+      });
+
+      const dateText = now.toLocaleDateString([], {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      });
+
+      const startOfDay = new Date(now);
+      startOfDay.setHours(0, 0, 0, 0);
+      const secondsPassed = Math.floor((now - startOfDay) / 1000);
+      const dayProgress = ((secondsPassed / 86400) * 100).toFixed(1) + '%';
+
+      timeEl.textContent = timeText;
+      dateEl.textContent = dateText;
+      progressEl.textContent = dayProgress;
+      weekdayEl.textContent = now.toLocaleDateString([], { weekday: 'long' });
+
+      const zone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Local Time';
+      timezoneEl.textContent = zone.replace('_', ' ');
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+  </script>
 </body>
 </html>
